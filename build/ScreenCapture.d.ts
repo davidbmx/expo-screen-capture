@@ -1,4 +1,4 @@
-import { Subscription, PermissionResponse, PermissionStatus, PermissionHookOptions } from 'expo-modules-core';
+import { Subscription, PermissionResponse, PermissionStatus, PermissionHookOptions } from "expo-modules-core";
 /**
  * Returns whether the Screen Capture API is available on the current device.
  *
@@ -50,7 +50,17 @@ export declare function usePreventScreenCapture(key?: string): void;
  * `remove()` or passing it to `removeScreenshotListener`.
  */
 export declare function addScreenshotListener(listener: () => void): Subscription;
-export declare function addRecordingtListener(listener: (recording: any) => void): Subscription;
+/**
+ * Adds a listener that will fire whenever the user start screen recording
+ * with [`MediaLibrary.requestPermissionsAsync()`](./media-library/#medialibraryrequestpermissionsasync).
+ *
+ * @param listener The function that will be executed when the user start screen recording.
+ * This function accepts no arguments.
+ *
+ * @return A `Subscription` object that you can use to unregister the listener, either by calling
+ * `remove()` or passing it to `removeScreenshotListener`.
+ */
+export declare function addRecordingtListener(listener: (recording: boolean) => void): Subscription;
 /**
  * Removes the subscription you provide, so that you are no longer listening for screenshots.
  *
@@ -92,5 +102,5 @@ export declare function requestPermissionsAsync(): Promise<PermissionResponse>;
  * ```
  */
 export declare const usePermissions: (options?: PermissionHookOptions<object> | undefined) => [PermissionResponse | null, () => Promise<PermissionResponse>, () => Promise<PermissionResponse>];
-export { Subscription, PermissionResponse, PermissionStatus, PermissionHookOptions };
+export { Subscription, PermissionResponse, PermissionStatus, PermissionHookOptions, };
 //# sourceMappingURL=ScreenCapture.d.ts.map

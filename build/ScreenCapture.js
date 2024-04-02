@@ -1,9 +1,10 @@
-import { EventEmitter, UnavailabilityError, PermissionStatus, createPermissionHook, } from 'expo-modules-core';
-import { useEffect } from 'react';
-import ExpoScreenCapture from './ExpoScreenCapture';
+import { EventEmitter, UnavailabilityError, PermissionStatus, createPermissionHook, } from "expo-modules-core";
+import { useEffect } from "react";
+import ExpoScreenCapture from "./ExpoScreenCapture";
 const activeTags = new Set();
 const emitter = new EventEmitter(ExpoScreenCapture);
-const onScreenshotEventName = 'onScreenshot';
+const onScreenshotEventName = "onScreenshot";
+const onScreenRecordingName = "onScreenRecording";
 // @needsAudit
 /**
  * Returns whether the Screen Capture API is available on the current device.
@@ -12,7 +13,8 @@ const onScreenshotEventName = 'onScreenshot';
  * device. Currently, this resolves to `true` on Android and iOS only.
  */
 export async function isAvailableAsync() {
-    return !!ExpoScreenCapture.preventScreenCapture && !!ExpoScreenCapture.allowScreenCapture;
+    return (!!ExpoScreenCapture.preventScreenCapture &&
+        !!ExpoScreenCapture.allowScreenCapture);
 }
 // @needsAudit
 /**
@@ -27,9 +29,9 @@ export async function isAvailableAsync() {
  * When using multiple keys, you'll have to re-allow each one in order to re-enable screen capturing.
  * Defaults to `'default'`.
  */
-export async function preventScreenCaptureAsync(key = 'default') {
+export async function preventScreenCaptureAsync(key = "default") {
     if (!ExpoScreenCapture.preventScreenCapture) {
-        throw new UnavailabilityError('ScreenCapture', 'preventScreenCaptureAsync');
+        throw new UnavailabilityError("ScreenCapture", "preventScreenCaptureAsync");
     }
     if (!activeTags.has(key)) {
         activeTags.add(key);
@@ -46,9 +48,9 @@ export async function preventScreenCaptureAsync(key = 'default') {
  * be the same as the key passed to `preventScreenCaptureAsync` in order to re-enable screen
  * capturing. Defaults to 'default'.
  */
-export async function allowScreenCaptureAsync(key = 'default') {
+export async function allowScreenCaptureAsync(key = "default") {
     if (!ExpoScreenCapture.preventScreenCapture) {
-        throw new UnavailabilityError('ScreenCapture', 'allowScreenCaptureAsync');
+        throw new UnavailabilityError("ScreenCapture", "allowScreenCaptureAsync");
     }
     activeTags.delete(key);
     if (activeTags.size === 0) {
@@ -64,7 +66,7 @@ export async function allowScreenCaptureAsync(key = 'default') {
  * This argument is useful if you have multiple active components using the `allowScreenCaptureAsync`
  * hook. Defaults to `'default'`.
  */
-export function usePreventScreenCapture(key = 'default') {
+export function usePreventScreenCapture(key = "default") {
     useEffect(() => {
         preventScreenCaptureAsync(key);
         return () => {
@@ -87,8 +89,18 @@ export function usePreventScreenCapture(key = 'default') {
 export function addScreenshotListener(listener) {
     return emitter.addListener(onScreenshotEventName, listener);
 }
+/**
+ * Adds a listener that will fire whenever the user start screen recording
+ * with [`MediaLibrary.requestPermissionsAsync()`](./media-library/#medialibraryrequestpermissionsasync).
+ *
+ * @param listener The function that will be executed when the user start screen recording.
+ * This function accepts no arguments.
+ *
+ * @return A `Subscription` object that you can use to unregister the listener, either by calling
+ * `remove()` or passing it to `removeScreenshotListener`.
+ */
 export function addRecordingtListener(listener) {
-    return emitter.addListener("isRecording", listener);
+    return emitter.addListener(onScreenRecordingName, listener);
 }
 // @needsAudit
 /**
@@ -151,9 +163,9 @@ export const usePermissions = createPermissionHook({
 });
 const defaultPermissionsResponse = {
     granted: true,
-    expires: 'never',
+    expires: "never",
     canAskAgain: true,
     status: PermissionStatus.GRANTED,
 };
-export { PermissionStatus };
+export { PermissionStatus, };
 //# sourceMappingURL=ScreenCapture.js.map

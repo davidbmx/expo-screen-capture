@@ -5,6 +5,7 @@
 #import <ExpoModulesCore/EXEventEmitterService.h>
 
 static NSString * const onScreenshotEventName = @"onScreenshot";
+static NSString * const onScreenRecordingName = @"onScreenRecording";
 
 @interface EXScreenCaptureModule ()
 
@@ -71,10 +72,10 @@ EX_EXPORT_METHOD_AS(allowScreenCapture,
 
   if (isCaptured) {
     [UIApplication.sharedApplication.keyWindow.subviews.firstObject addSubview:_blockView];
-    [_eventEmitter sendEventWithName:@"isRecording" body:@{@"isRecording": @(YES)}];
+    [_eventEmitter sendEventWithName:onScreenRecordingName body:@(YES)];
   } else {
     [_blockView removeFromSuperview];
-    [_eventEmitter sendEventWithName:@"isRecording" body:@{@"isRecording": @(NO)}];
+    [_eventEmitter sendEventWithName:onScreenRecordingName body:@(NO)];
   }
 }
 
@@ -82,7 +83,7 @@ EX_EXPORT_METHOD_AS(allowScreenCapture,
 
 - (NSArray<NSString *> *)supportedEvents
 {
-  return @[onScreenshotEventName, @"isRecording"];
+  return @[onScreenshotEventName, onScreenRecordingName];
 }
 
 - (void)startObserving

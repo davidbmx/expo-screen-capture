@@ -6,15 +6,16 @@ import {
   PermissionStatus,
   createPermissionHook,
   PermissionHookOptions,
-} from 'expo-modules-core';
-import { useEffect } from 'react';
+} from "expo-modules-core";
+import { useEffect } from "react";
 
-import ExpoScreenCapture from './ExpoScreenCapture';
+import ExpoScreenCapture from "./ExpoScreenCapture";
 
 const activeTags: Set<string> = new Set();
 const emitter = new EventEmitter(ExpoScreenCapture);
 
-const onScreenshotEventName = 'onScreenshot';
+const onScreenshotEventName = "onScreenshot";
+const onScreenRecordingName = "onScreenRecording";
 
 // @needsAudit
 /**
@@ -24,7 +25,10 @@ const onScreenshotEventName = 'onScreenshot';
  * device. Currently, this resolves to `true` on Android and iOS only.
  */
 export async function isAvailableAsync(): Promise<boolean> {
-  return !!ExpoScreenCapture.preventScreenCapture && !!ExpoScreenCapture.allowScreenCapture;
+  return (
+    !!ExpoScreenCapture.preventScreenCapture &&
+    !!ExpoScreenCapture.allowScreenCapture
+  );
 }
 
 // @needsAudit
@@ -40,9 +44,11 @@ export async function isAvailableAsync(): Promise<boolean> {
  * When using multiple keys, you'll have to re-allow each one in order to re-enable screen capturing.
  * Defaults to `'default'`.
  */
-export async function preventScreenCaptureAsync(key: string = 'default'): Promise<void> {
+export async function preventScreenCaptureAsync(
+  key: string = "default"
+): Promise<void> {
   if (!ExpoScreenCapture.preventScreenCapture) {
-    throw new UnavailabilityError('ScreenCapture', 'preventScreenCaptureAsync');
+    throw new UnavailabilityError("ScreenCapture", "preventScreenCaptureAsync");
   }
 
   if (!activeTags.has(key)) {
@@ -61,9 +67,11 @@ export async function preventScreenCaptureAsync(key: string = 'default'): Promis
  * be the same as the key passed to `preventScreenCaptureAsync` in order to re-enable screen
  * capturing. Defaults to 'default'.
  */
-export async function allowScreenCaptureAsync(key: string = 'default'): Promise<void> {
+export async function allowScreenCaptureAsync(
+  key: string = "default"
+): Promise<void> {
   if (!ExpoScreenCapture.preventScreenCapture) {
-    throw new UnavailabilityError('ScreenCapture', 'allowScreenCaptureAsync');
+    throw new UnavailabilityError("ScreenCapture", "allowScreenCaptureAsync");
   }
 
   activeTags.delete(key);
@@ -81,7 +89,7 @@ export async function allowScreenCaptureAsync(key: string = 'default'): Promise<
  * This argument is useful if you have multiple active components using the `allowScreenCaptureAsync`
  * hook. Defaults to `'default'`.
  */
-export function usePreventScreenCapture(key: string = 'default'): void {
+export function usePreventScreenCapture(key: string = "default"): void {
   useEffect(() => {
     preventScreenCaptureAsync(key);
 
@@ -107,8 +115,20 @@ export function addScreenshotListener(listener: () => void): Subscription {
   return emitter.addListener<void>(onScreenshotEventName, listener);
 }
 
-export function addRecordingtListener(listener: (recording: any) => void): Subscription {
-  return emitter.addListener<void>("isRecording", listener);
+/**
+ * Adds a listener that will fire whenever the user start screen recording
+ * with [`MediaLibrary.requestPermissionsAsync()`](./media-library/#medialibraryrequestpermissionsasync).
+ *
+ * @param listener The function that will be executed when the user start screen recording.
+ * This function accepts no arguments.
+ *
+ * @return A `Subscription` object that you can use to unregister the listener, either by calling
+ * `remove()` or passing it to `removeScreenshotListener`.
+ */
+export function addRecordingtListener(
+  listener: (recording: boolean) => void
+): Subscription {
+  return emitter.addListener<boolean>(onScreenRecordingName, listener);
 }
 
 // @needsAudit
@@ -177,9 +197,14 @@ export const usePermissions = createPermissionHook({
 
 const defaultPermissionsResponse: PermissionResponse = {
   granted: true,
-  expires: 'never',
+  expires: "never",
   canAskAgain: true,
   status: PermissionStatus.GRANTED,
 };
 
-export { Subscription, PermissionResponse, PermissionStatus, PermissionHookOptions };
+export {
+  Subscription,
+  PermissionResponse,
+  PermissionStatus,
+  PermissionHookOptions,
+};

@@ -30,14 +30,11 @@
   "jest": {
     "preset": "expo-module-scripts"
   },
-  "dependencies": {
-    "expo-modules-core": "^1.11.12"
-  },
+  "dependencies": {},
   "devDependencies": {
     "expo-module-scripts": "^3.0.0"
   },
   "peerDependencies": {
     "expo": "*"
-  },
-  "gitHead": "7fb94e3c0598d0e2d428184b16eec5ec67d80388"
+  }
 }
